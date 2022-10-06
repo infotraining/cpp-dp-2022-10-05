@@ -8,6 +8,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <mutex>
 
 // "Subject"
 class Image
@@ -72,6 +73,7 @@ class LazyBitmap : public Image
 {
     std::string path_;
     std::unique_ptr<Bitmap> bitmap_;
+    std::once_flag init_flag_;
 
 public:
     LazyBitmap(std::string path)
@@ -84,10 +86,12 @@ public:
     void draw() override
     {
         // lazy initialization
-        if (!bitmap_)
-        {
-            bitmap_ = std::make_unique<Bitmap>(path_);
-        }
+        // if (!bitmap_)
+        // {
+        //     bitmap_ = std::make_unique<Bitmap>(path_);
+        // }
+
+        std::call_once(init_flag_, [this] { bitmap_ = std::make_unique<Bitmap>(path_); });
 
         bitmap_->draw();
     }
