@@ -14,7 +14,6 @@ using namespace std;
 using namespace Drawing;
 using namespace Drawing::IO;
 
-// TODO - make this class copyable
 class GraphicsDoc
 {
     vector<unique_ptr<Shape>> shapes_;
@@ -27,6 +26,17 @@ public:
         , shape_rw_factory_{shape_rw_factory}
     {
     }
+
+    GraphicsDoc(const GraphicsDoc& source)
+        : shape_factory_{source.shape_factory_}
+        , shape_rw_factory_{source.shape_rw_factory_}
+    {
+        shapes_.reserve(source.shapes_.size());
+        for (const auto& shp : source.shapes_)
+            shapes_.push_back(shp->clone());
+    }
+
+    GraphicsDoc& operator=(const GraphicsDoc&) = delete;
 
     void add(unique_ptr<Shape> shp)
     {

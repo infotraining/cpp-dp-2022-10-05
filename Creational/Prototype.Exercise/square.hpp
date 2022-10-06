@@ -6,10 +6,9 @@
 namespace Drawing
 {
 
-    class Square : public Shape
+    class Square : public CloneableShape<Square>
     {
         Rectangle rect_;
-
     public:
         static constexpr const char* id = "Square";
 
@@ -27,6 +26,7 @@ namespace Drawing
 
         void move(int dx, int dy) override;
     };
+
 }
 
 #endif // SQUARE_HPP

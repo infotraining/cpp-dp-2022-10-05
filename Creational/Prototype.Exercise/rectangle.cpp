@@ -6,19 +6,17 @@ using namespace Drawing;
 
 namespace
 {
-    bool is_registered = SingletonShapeFactory::instance()
-                             .register_creator(Rectangle::id, &make_unique<Rectangle>);
+    bool is_registered =
+            SingletonShapeFactory::instance()
+                .register_creator(Rectangle::id, &make_unique<Rectangle>);
 }
 
 Rectangle::Rectangle(int x, int y, int w, int h)
-    : ShapeBase{x, y}
-    , width_{w}
-    , height_{h}
-{
-}
+    : ShapeBase{x, y}, width_{w}, height_{h}
+{}
 
 void Rectangle::draw() const
 {
-    std::cout << "Drawing rectangle at " << coord() << " with width: " << width_
+    std::cout << "Drawing rectangle at " << coord() << " with width: "  << width_
               << " and height: " << height_ << std::endl;
 }

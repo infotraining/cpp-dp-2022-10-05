@@ -5,36 +5,37 @@
 
 namespace Drawing
 {
-    class Rectangle : public ShapeBase
+
+class Rectangle : public ShapeBase<Rectangle>
+{
+    int width_, height_;
+public:
+    static constexpr const char* id = "Rectangle";
+
+    Rectangle(int x = 0, int y = 0, int w = 0, int h = 0);
+
+    int width() const
     {
-        int width_, height_;
+        return width_;
+    }
 
-    public:
-        static constexpr const char* id = "Rectangle";
+    void set_width(int w)
+    {
+        width_ = w;
+    }
 
-        Rectangle(int x = 0, int y = 0, int w = 0, int h = 0);
+    int height() const
+    {
+        return height_;
+    }
 
-        int width() const
-        {
-            return width_;
-        }
+    void set_height(int h)
+    {
+        height_ = h;
+    }
 
-        void set_width(int w)
-        {
-            width_ = w;
-        }
+    void draw() const override;
+};
 
-        int height() const
-        {
-            return height_;
-        }
-
-        void set_height(int h)
-        {
-            height_ = h;
-        }
-
-        void draw() const override;
-    };
-} // namespace Drawing
+}
 #endif // RECTANGLE_HPP

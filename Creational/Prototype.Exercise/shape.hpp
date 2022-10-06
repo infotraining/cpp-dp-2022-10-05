@@ -2,6 +2,7 @@
 #define SHAPE_HPP
 
 #include "point.hpp"
+#include <memory>
 
 namespace Drawing
 {
@@ -9,11 +10,26 @@ namespace Drawing
     {
     public:
         virtual ~Shape() = default;
-        virtual void move(int x, int y) = 0;
+        virtual void move(int dx, int dy) = 0;
         virtual void draw() const = 0;
+        virtual std::unique_ptr<Shape> clone() const = 0;
     };
 
-    class ShapeBase : public Shape
+    // CRTP
+    template <typename Type, typename BaseType = Shape>
+    class CloneableShape : public BaseType
+    {
+    public:
+        /
+
+        std::unique_ptr<Shape> clone() const
+        {
+            return std::make_unique<Type>(static_cast<const Type&>(*this));
+        }
+    };
+
+    template <typename Type>
+    class ShapeBase : public CloneableShape<Type>
     {
         Point coord_; // composition
     public:

@@ -15,7 +15,7 @@ std::istream& operator>>(std::istream& in, Drawing::Point& pt)
     char start, separator, end;
     int x, y;
 
-    if (in >> start && start != opening_bracket)
+    if ( in >> start && start != opening_bracket)
     {
         in.unget();
         in.clear(std::ios_base::failbit);
@@ -24,7 +24,7 @@ std::istream& operator>>(std::istream& in, Drawing::Point& pt)
 
     in >> x >> separator >> y >> end;
 
-    if (!in || (separator != comma) || (end != closing_bracket))
+    if ( !in || (separator != comma) || (end != closing_bracket) )
         throw std::runtime_error("Stream reading error");
 
     pt.x = x;

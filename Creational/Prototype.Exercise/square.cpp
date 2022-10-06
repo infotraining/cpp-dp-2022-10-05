@@ -1,18 +1,18 @@
+#include <cassert>
 #include "square.hpp"
 #include "shape_factories.hpp"
-#include <cassert>
 
 using namespace std;
 using namespace Drawing;
 
 namespace
 {
-    bool is_registered = SingletonShapeFactory::instance()
-                             .register_creator(Square::id, &make_unique<Square>);
+    bool is_registered =
+            SingletonShapeFactory::instance()
+                .register_creator(Square::id, &make_unique<Square>);
 }
 
-Square::Square(int x, int y, int size)
-    : rect_{x, y, size, size}
+Square::Square(int x, int y, int size) : rect_{x, y, size, size}
 {
 }
 
