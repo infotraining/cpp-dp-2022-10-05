@@ -25,6 +25,8 @@ namespace Game
     {
     };
 
+    // Silly level 
+
     class SillySoldier : public Soldier
     {
     public:
@@ -52,6 +54,7 @@ namespace Game
         }
     };
 
+    // die hard level
     class BadSoldier : public Soldier
     {
     public:

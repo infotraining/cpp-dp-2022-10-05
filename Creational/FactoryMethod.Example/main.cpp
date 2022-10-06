@@ -109,7 +109,7 @@ public:
 
         for (const auto& shp : shapes_)
         {
-            auto shape_rw = create_shape_rw(*shp);
+            auto shape_rw = shape_rw_factory_(make_type_index(*shp));
             shape_rw->write(*shp, file_out);
         }
     }
