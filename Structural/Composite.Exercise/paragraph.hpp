@@ -7,6 +7,7 @@
 
 namespace LegacyCode
 {
+
     class Paragraph
     {
         char* buffer_;
@@ -18,20 +19,17 @@ namespace LegacyCode
         }
 
     public:
-        Paragraph()
-            : buffer_(new char[1024])
+        Paragraph() : buffer_(new char[1024])
         {
             std::strcpy(buffer_, "Default text!");
         }
 
-        Paragraph(const Paragraph& p)
-            : buffer_(new char[1024])
+        Paragraph(const Paragraph& p) : buffer_(new char[1024])
         {
             std::strcpy(buffer_, p.buffer_);
         }
 
-        Paragraph(const char* txt)
-            : buffer_(new char[1024])
+        Paragraph(const char* txt) : buffer_(new char[1024])
         {
             std::strcpy(buffer_, txt);
         }

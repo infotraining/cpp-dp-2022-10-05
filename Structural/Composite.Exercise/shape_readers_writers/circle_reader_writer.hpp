@@ -9,7 +9,7 @@ namespace Drawing
     {
         class CircleReaderWriter : public ShapeReaderWriter
         {
-        public:            
+        public:
             void read(Shape& shp, std::istream& in) override;
             void write(const Shape& shp, std::ostream& out) override;
         };

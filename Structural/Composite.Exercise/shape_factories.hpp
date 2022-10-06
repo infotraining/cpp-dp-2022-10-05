@@ -9,7 +9,6 @@
 
 namespace Drawing
 {
-
     using ShapeFactory = GenericFactory<Drawing::Shape>;
     using SingletonShapeFactory = SingletonHolder<ShapeFactory>;
 
