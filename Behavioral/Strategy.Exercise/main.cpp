@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <functional>
 
 struct StatResult
 {
@@ -30,15 +31,17 @@ enum StatisticsType
     sum
 };
 
+using Statistics = std::function<void (const Data& data, Results& results)>;
+
 class DataAnalyzer
 {
-    StatisticsType stat_type_;
+    Statistics statistics_;
     Data data_;
     Results results_;
 
 public:
-    DataAnalyzer(StatisticsType stat_type)
-        : stat_type_{stat_type}
+    DataAnalyzer(Statistics statistics)
+        : statistics_{statistics}
     {
     }
 
@@ -60,35 +63,14 @@ public:
         std::cout << "File " << file_name << " has been loaded...\n";
     }
 
-    void set_statistics(StatisticsType stat_type)
+    void set_statistics(Statistics statistics)
     {
-        stat_type_ = stat_type;
+        statistics_ = statistics;
     }
 
     void calculate()
     {
-        if (stat_type_ == avg)
-        {
-            double sum = std::accumulate(data_.begin(), data_.end(), 0.0);
-            double avg = sum / data_.size();
-
-            StatResult result("Avg", avg);
-            results_.push_back(result);
-        }
-        else if (stat_type_ == min_max)
-        {
-            double min = *(std::min_element(data_.begin(), data_.end()));
-            double max = *(std::max_element(data_.begin(), data_.end()));
-
-            results_.push_back(StatResult("Min", min));
-            results_.push_back(StatResult("Max", max));
-        }
-        else if (stat_type_ == sum)
-        {
-            double sum = std::accumulate(data_.begin(), data_.end(), 0.0);
-
-            results_.push_back(StatResult("Sum", sum));
-        }
+        statistics_(data_, results_);
     }
 
     const Results& results() const
@@ -103,18 +85,71 @@ void show_results(const Results& results)
         std::cout << rslt.description << " = " << rslt.value << std::endl;
 }
 
+struct Avg
+{
+    void operator()(const Data& data, Results& results)
+    {
+            double sum = std::accumulate(data.begin(), data.end(), 0.0);
+            double avg = sum / data.size();
+
+            StatResult result("Avg", avg);
+            results.push_back(result);
+    }
+};
+
+struct Sum
+{
+    void operator()(const Data& data, Results& results)
+    {
+            double sum = std::accumulate(data.begin(), data.end(), 0.0);
+
+             results.push_back(StatResult("Sum", sum));
+    }
+};
+
+// Composite Statistics
+class StatGroup
+{
+    std::vector<Statistics> stats_;
+public:
+    using iterator = std::vector<Statistics>::iterator;
+    using const_iterator = std::vector<Statistics>::const_iterator;
+
+    StatGroup() = default;
+
+    StatGroup(std::vector<Statistics> stats) : stats_{stats}
+    {}
+
+    void add_statistics(Statistics statistics)
+    {
+        stats_.push_back(statistics);
+    }
+
+    void operator()(const Data& data, Results& results)
+    {
+        for(auto& stat : stats_)
+            stat(data, results);
+    }
+};
+
 int main()
 {
-    DataAnalyzer da{avg};
+    Avg avg;
+    Sum sum;
+    
+    auto min_max = [](const Data& data, Results& results) {
+            double min = *(std::min_element(data.begin(), data.end()));
+            double max = *(std::max_element(data.begin(), data.end()));
+
+            results.push_back(StatResult("Min", min));
+            results.push_back(StatResult("Max", max));
+    };
+    
+    StatGroup std_stats({avg, min_max, sum});
+
+    DataAnalyzer da{std_stats};
     da.load_data("data.dat");
-
-    da.calculate();
-
-    da.set_statistics(min_max);
-    da.calculate();
-
-    da.set_statistics(sum);
-    da.calculate();
+    da.calculate();    
 
     show_results(da.results());
 
